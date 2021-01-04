@@ -1,0 +1,50 @@
+version: "3"
+services:
+  rabbitmq-master:
+    image: rabbitmq:management-alpine
+    container_name: rabbitmq-master
+    restart: always
+    ports:
+      - 15672:15672
+      - 5672:5672
+    volumes:
+      - ${DATA_PATH}/rabbitmq-master:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    networks:
+      - backend
+
+  rabbitmq-node1:
+    image: rabbitmq:management-alpine
+    container_name: rabbitmq-node1
+    restart: always
+    ports:
+      - 15673:15672
+      - 5673:5672
+    volumes:
+      - ${DATA_PATH}/rabbitmq-node1:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    networks:
+      - backend
+
+  rabbitmq-node2:
+    image: rabbitmq:management-alpine
+    container_name: rabbitmq-node2
+    restart: always
+    ports:
+      - 15674:15672
+      - 5674:5672
+    volumes:
+      - ${DATA_PATH}/rabbitmq-node2:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
