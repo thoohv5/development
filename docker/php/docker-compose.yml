@@ -1,0 +1,35 @@
+version: "3"
+services:
+  php73:
+    build:
+      context: ./73
+    volumes:
+      - ${SOURCE_DIR}:/var/www/html:rw
+      - ${PHP_CONF_DIR}/73/php.ini:/usr/local/etc/php/php.ini:ro
+      - ${PHP_CONF_DIR}/73/php-fpm.confi:/usr/local/etc/php-fpm.d/test.conf:rw
+      - ${PHP_LOG_PATH}/73:/var/log/php
+    cap_add:
+      - SYS_PTRACE
+    environment:
+      - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
+    networks:
+      - backend
+
+  php56:
+    build:
+      context: ./56
+    volumes:
+      - ${SOURCE_DIR}:/var/www/html:rw
+      - ${PHP_CONF_DIR}/56/php.ini:/usr/local/etc/php/php.ini:ro
+      - ${PHP_CONF_DIR}/56/php-fpm.confi:/usr/local/etc/php-fpm.d/test.conf:rw
+      - ${PHP_LOG_PATH}/56:/var/log/php
+    cap_add:
+      - SYS_PTRACE
+    environment:
+      - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: ${NETWORKS_DRIVER}
