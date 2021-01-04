@@ -1,0 +1,14 @@
+cluster.name: "es-cluster"
+node.name: es-master
+node.master: true
+node.data: true
+network.host: 0.0.0.0
+http.port: 9200
+transport.tcp.port: 9300
+bootstrap.memory_lock: true
+discovery.zen.minimum_master_nodes: 1
+
+path.logs: /usr/share/elasticsearch/logs
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+#xpack.security.audit.enabled: true

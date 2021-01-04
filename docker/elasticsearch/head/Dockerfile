@@ -1,0 +1,1 @@
+FROM tobias74/elasticsearch-head:6

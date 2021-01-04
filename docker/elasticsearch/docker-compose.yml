@@ -1,0 +1,55 @@
+version: "3"
+services:
+
+  es-master:
+    build:  ./master
+    container_name: es-master
+    volumes:
+      - ${DATA_PATH}/es-master:/usr/share/elasticsearch/data:rw
+      - ${ES_MASTER_CONF}:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ${ES_MASTER_LOG_DIR}:/user/share/elasticsearch/logs:rw
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "${ES_HOST_HTTP_PORT}:9200"
+      - "${ES_HOST_TRANSPORT_PORT}:9300"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - backend
+
+  es-node:
+    build:  ./node
+    container_name: es-node
+    volumes:
+      - ${DATA_PATH}/es-node:/usr/share/elasticsearch/data:rw
+      - ${ES_NODE_CONF}:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ${ES_NODE_LOG_DIR}:/user/share/elasticsearch/logs:rw
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - backend
+
+  es-head:
+    build: ./head
+    container_name: es-head
+    ports:
+      - "${ES_HEAD_HOST_PORT}:9100"
+    depends_on:
+      - es-master
+      - es-node
+    networks:
+      - frontend
+      - backend
+
+networks:
+  frontend:
+    driver: ${NETWORKS_DRIVER}
+  backend:
+    driver: ${NETWORKS_DRIVER}
