@@ -1,0 +1,109 @@
+version: "3"
+services:
+  workspace:
+    build:
+      context: ./workspace
+    volumes:
+      - ${SOURCE_DIR}:/var/www/html:rw
+      - ${WORKSPACE_CONF_FILE}:/usr/local/etc/php/php.ini:ro
+      - ${WORKSPACE_FPM_CONF_FILE}:/usr/local/etc/php-fpm.d/test.conf:rw
+      - ${WORKSPACE_LOG_PATH}:/var/log/php
+    ports:
+      - "9501:9501"
+    restart: always
+    cap_add:
+      - SYS_PTRACE
+    environment:
+      - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
+    networks:
+      - frontend
+      - backend
+
+  php73:
+    build:
+      context: ./php/73
+    volumes:
+      - ${SOURCE_DIR}:/var/www/html:rw
+      - ${PHP_CONF_DIR}/73/php.ini:/usr/local/etc/php/php.ini:ro
+      - ${PHP_CONF_DIR}/73/php-fpm.conf:/usr/local/etc/php-fpm.d/test.conf:rw
+      - ${PHP_LOG_PATH}/73:/var/log/php
+    cap_add:
+      - SYS_PTRACE
+    environment:
+      - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
+    networks:
+      - frontend
+      - backend
+
+  php56:
+    build:
+      context: ./php/56
+    volumes:
+      - ${SOURCE_DIR}:/var/www/html:rw
+      - ${PHP_CONF_DIR}/56/php.ini:/usr/local/etc/php/php.ini:ro
+      - ${PHP_CONF_DIR}/56/php-fpm.conf:/usr/local/etc/php-fpm.d/test.conf:rw
+      - ${PHP_LOG_PATH}/56:/var/log/php
+    cap_add:
+      - SYS_PTRACE
+    environment:
+      - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
+    networks:
+      - frontend
+      - backend
+
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "${NGINX_HTTP_HOST_PORT}:80"
+      - "${NGINX_HTTPS_HOST_PORT}:443"
+    volumes:
+      - ${SOURCE_DIR}:/var/www/html:rw
+      - ${NGINX_CONFD_DIR}:/etc/nginx/conf.d/:rw
+      - ${NGINX_LOG_DIR}:/var/log/nginx/:rw
+    networks:
+      - frontend
+      - backend
+
+  mysql:
+    build:
+      context: ./mysql/latest
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ${DATA_PATH}/mysql:/var/lib/mysql
+      - ${MYSQL_LOG_PATH}:/var/log/mysql
+    ports:
+      - "${MYSQL_PORT}:3306"
+    networks:
+      - backend
+
+  redis:
+    build: ./redis/redis
+    volumes:
+      - ${DATA_PATH}/redis:/data
+      - ${REDIS_LOG_PATH}:/var/log/redis
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      - backend
+
+  ssdb:
+    build: ./ssdb
+    volumes:
+      - ${DATA_PATH}/ssdb:/var/lib/ssdb
+      - ${SSDB_LOG_PATH}:/var/log/ssdb
+    ports:
+      - "${SSDB_PORT}:8888"
+    networks:
+      - backend
+
+networks:
+  frontend:
+    driver: ${NETWORKS_DRIVER}
+  backend:
+    driver: ${NETWORKS_DRIVER}
