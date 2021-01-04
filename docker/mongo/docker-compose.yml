@@ -1,0 +1,33 @@
+version: "3"
+services:
+  mongo:
+    build: ./mongo
+    ports:
+      - "${MONGODB_PORT}:27017"
+    volumes:
+      - ${DATA_PATH}/mongo:/mong
+    networks:
+      - backend
+
+  mongo-webui:
+    build:
+      context: ./mongo-webui
+    environment:
+      - ROOT_URL=${MONGO_WEBUI_ROOT_URL}
+      - MONGO_URL=${MONGO_WEBUI_MONGO_URL}
+      - INSTALL_MONGO=${MONGO_WEBUI_INSTALL_MONGO}
+    volumes:
+      - ${DATA_PATH}/mongo-webui:/data/db
+    ports:
+      - "${MONGO_WEBUI_PORT}:3000"
+    depends_on:
+      - mongo
+    networks:
+      - backend
+      - frontend
+
+networks:
+  frontend:
+    driver: ${NETWORKS_DRIVER}
+  backend:
+    driver: ${NETWORKS_DRIVER}
