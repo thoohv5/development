@@ -1,0 +1,34 @@
+# mysql
+```
+
+docker-compose build mysql56 mysql57 mysql mysql-slave
+
+docker-compose up -d mysql56 mysql57 mysql mysql-slave
+
+```
+
+## 主从配置
+```
+# 主上面创建账号
+CREATE USER 'repl'@'%' IDENTIFIED BY 'password';
+GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%';
+FLUSH PRIVILEGES;
+
+# 确定当前二进制日志文件的名称和位置
+SHOW MASTER STATUS;
+
+# 启动复制链路
+CHANGE MASTER TO
+MASTER_HOST='mysql',
+MASTER_USER='repl',
+MASTER_PASSWORD='password',
+MASTER_PORT=3306,
+MASTER_LOG_FILE='master-bin.000002',
+MASTER_LOG_POS=830;
+
+# 主数据库查看复制状态
+SHOW MASTER STATUS;
+
+# 从数据库查看复制状态
+SHOW SLAVE STATUS;
+```

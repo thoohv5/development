@@ -1,0 +1,70 @@
+version: "3"
+services:
+  mysql56:
+    build:
+      context: ./56
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ${DATA_PATH}/mysql/56:/var/lib/mysql
+      - ${MYSQL_LOG_PATH}/56:/var/log/mysql
+    ports:
+      - "${MYSQL56_PORT}:3306"
+    networks:
+      - backend
+
+  mysql57:
+    build:
+      context: ./57
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ${DATA_PATH}/mysql/57:/var/lib/mysql
+      - ${MYSQL_LOG_PATH}/57:/var/log/mysql
+    ports:
+      - "${MYSQL57_PORT}:3306"
+    networks:
+      - backend
+
+  mysql:
+    build:
+      context: ./latest
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ${DATA_PATH}/mysql/latest:/var/lib/mysql
+      - ${MYSQL_LOG_PATH}/latest:/var/log/mysql
+    ports:
+      - "${MYSQL_PORT}:3306"
+    networks:
+      - backend
+
+  mysql-slave:
+    build:
+      context: ./slave
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ${DATA_PATH}/mysql/slave:/var/lib/mysql
+      - ${MYSQL_LOG_PATH}/slave:/var/log/mysql
+    ports:
+      - "${MYSQL_SLAVE_PORT}:3306"
+    networks:
+      - backend
+
+
+networks:
+  backend:
+    driver: ${NETWORKS_DRIVER}
