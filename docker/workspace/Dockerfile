@@ -1,4 +1,4 @@
-FROM php_php73:latest
+FROM php_php56:latest
 
 COPY ./.ssh /root/.ssh
 
@@ -16,9 +16,10 @@ RUN php -r "copy('https://install.phpcomposer.com/installer', 'composer-setup.ph
 
 
 # Install phpuint and add its bin to the PATH.
-RUN wget -q -O phpunit.phar https://phar.phpunit.de/phpunit-7.phar\
-    && chmod +x phpunit.phar \
-    && mv phpunit.phar /usr/local/bin/phpunit
+#RUN wget -q -O phpunit.phar https://phar.phpunit.de/phpunit-7.phar\
+COPY extensions /tmp/extensions
+RUN chmod +x /tmp/extensions/phpunit.phar \
+    && mv /tmp/extensions/phpunit.phar /usr/local/bin/phpunit
 
 #RUN wget -q -O phpunit.phar https://phar.phpunit.de/phpunit-4.8.9.phar \
 #    && chmod +x phpunit.phar \
