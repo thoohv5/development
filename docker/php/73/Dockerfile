@@ -132,8 +132,9 @@ RUN set -xe; \
     && docker-php-ext-enable rdkafka \
 
     # install grpc
-    && mkdir grpc \
-    && tar -xf grpc-${PHP_GRPC}.tgz -C grpc --strip-components=1 \
+    && apk add zlib-dev \
+#    && mkdir grpc \
+#    && tar -xf grpc-${PHP_GRPC}.tgz -C grpc --strip-components=1 \
     && ( cd grpc && phpize && ./configure && make -j$(nproc) && make install ) \
     && docker-php-ext-enable grpc \
 
