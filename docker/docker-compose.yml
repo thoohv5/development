@@ -35,6 +35,23 @@ services:
       - frontend
       - backend
 
+  php72:
+    build:
+      context: ./php/72
+    volumes:
+      - ${SOURCE_DIR}:/var/www/html:rw
+      - ${PHP_CONF_DIR}/72/php.ini:/usr/local/etc/php/php.ini:ro
+      - ${PHP_CONF_DIR}/72/php-fpm.conf:/usr/local/etc/php-fpm.d/test.conf:rw
+      - ${PHP_LOG_PATH}/72:/var/log/php
+    cap_add:
+      - SYS_PTRACE
+    environment:
+      - PHP_IDE_CONFIG=${PHP_IDE_CONFIG}
+    networks:
+      - frontend
+      - backend
+
+
   php56:
     build:
       context: ./php/56

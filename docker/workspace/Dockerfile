@@ -1,4 +1,4 @@
-FROM php_php56:latest
+FROM php_php72:latest
 
 COPY ./.ssh /root/.ssh
 
